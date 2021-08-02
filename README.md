@@ -1,3 +1,3 @@
 ### DBT-REDSHIFT-MAGIC.
 
-DBT usefull macros used to replicate information againsts multiple Redshift dbs/Redshift clusters.
+DBT useful macros used to replicate information against multiple Redshift dbs/Redshift clusters.
