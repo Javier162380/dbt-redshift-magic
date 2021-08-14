@@ -16,7 +16,8 @@
         {%- set database_name, table_schema, table_name = database_object.split('.') -%}
         {%- set table_object = table_schema + '.' + table_name -%}
         {% do log("Regenerating sandbox object " + table_object, info=True) %} 
-        {%- set regeneration_query -%}  
+        {%- set regeneration_query -%}
+                CREATE SCHEMA IF NOT EXISTS {{target_schema}}; 
                 DROP TABLE IF EXISTS {{table_object}} CASCADE;
                 CREATE TABLE {{table_object}} as (
                     SELECT 
@@ -50,13 +51,14 @@
         {%- set database_name, table_schema, table_name = database_object.split('.') -%}
         {%- set table_object = table_schema + '.' + table_name -%}
         {% do log("Regenerating sandbox object " + table_object, info=True) %} 
-        {%- set regeneration_query -%}  
+        {%- set regeneration_query -%}
+                CREATE SCHEMA IF NOT EXISTS {{target_schema}};  
                 DROP TABLE IF EXISTS {{table_object}} CASCADE;
                 CREATE TABLE {{table_object}} as (
                     SELECT 
                         * 
                     FROM {{database_object}}
-                    LIMIT {{sample_size}}
+                    LIMIT {{db_sample}}
                 )
         {% endset %}
         {% do log(regeneration_query, info=True) %}
@@ -86,6 +88,7 @@
     {% if table_exists == True %}
         {% do log("Database object exists!") %}
         {%- set regeneration_query -%}
+        CREATE SCHEMA IF NOT EXISTS {{target_schema}};
         DROP TABLE IF EXISTS {{target_schema}}.{{target_table}} CASCADE;
         CREATE TABLE {{target_schema}}.{{target_table}} AS (
             SELECT 
@@ -121,6 +124,7 @@
     {% if table_exists == True %}
         {% do log("Database object exists!") %}
         {%- set regeneration_query -%}
+        CREATE SCHEMA IF NOT EXISTS {{target_schema}};
         DROP TABLE IF EXISTS {{target_schema}}.{{target_table}} CASCADE;
         CREATE TABLE {{target_schema}}.{{target_table}} AS (
             SELECT 
@@ -150,7 +154,7 @@
                 and table_name = '{{db_table}}'
                 and database_name = '{{db_name}}'
                 and schema_name = '{{db_schema}}'
-                LIMIT {{sample_size}}
+                LIMIT {{db_sample}}
     {% endset %}
     {% do log(database_objects_query, info=True) %}
     {%- set database_object = run_query(database_objects_query) -%}
@@ -158,6 +162,7 @@
     {% if table_exists == True %}
         {% do log("Database object exists!") %}
         {%- set regeneration_query -%}
+        CREATE SCHEMA IF NOT EXISTS {{target_schema}};
         DROP TABLE IF EXISTS {{target_schema}}.{{target_table}} CASCADE;
         CREATE TABLE {{target_schema}}.{{target_table}} AS (
             SELECT 
